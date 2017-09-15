@@ -1,5 +1,4 @@
 (ns nightbus.boundaries.mqtt.subscriber
-  (:gen-class)
   (:require [clojurewerkz.machine-head.client :as mh]
             [clojure.tools.logging :as log]))
 
