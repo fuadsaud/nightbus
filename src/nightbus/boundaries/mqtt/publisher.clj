@@ -1,6 +1,6 @@
 (ns nightbus.boundaries.mqtt.publisher
   (:require [clojurewerkz.machine-head.client :as mh]
-            [clojure.tools.logging :as log]))
+            [taoensso.timbre :as log]))
 
 (defn- broker-address-from-config [config]
   (str "tcp://" (:host config) ":" (:port config)))

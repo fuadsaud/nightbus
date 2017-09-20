@@ -15,7 +15,12 @@
                  [ring/ring-json "0.4.0"]
                  [ring/ring-devel "1.6.2"]
 
+                 ; Kafka
+                 [clj-kafka "0.3.4"]
+
                  ; Misc
-                 [org.clojure/tools.logging "0.4.0"]
-                 [org.clojure/data.json "0.2.6"]]
+                 [org.clojure/data.json "0.2.6"]
+
+                 [com.taoensso/timbre "4.10.0"]
+                 [ring-logger-timbre "0.7.5"]]
   :main nightbus.core)

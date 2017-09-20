@@ -1,29 +1,37 @@
 (ns nightbus.boundaries.http.server
-  (:require [bidi.ring :refer [make-handler]]
-            [ring.util.response :as response]
+  (:require [nightbus.boundaries.http.server.producer :as producer]
+            [nightbus.components :as components]
+            [bidi.ring :refer [make-handler]]
+            [ring.adapter.jetty :as jetty]
             [ring.middleware.json :as json]
             [ring.middleware.reload :as reload]
-            [ring.adapter.jetty :as jetty]))
+            [ring.logger.timbre :as logger.timbre]
+            [ring.util.response :as response]
+            [taoensso.timbre :as log]))
 
 (def from-wire identity)
 
 (defn produce-message-handler
-  [request]
-  (-> request
-      from-wire
-      )
+  [{:keys [kafka-producer]} request]
+  (->> request
+       :body
+       from-wire
+       (producer/produce! kafka-producer))
   (response/response {:status 202 :body "Produced!"}))
 
-(def routes
+(defn routes [components]
   ["/"
    {"messages"
-    {:post {"" produce-message-handler}}}] )
+    {:post {"" (partial produce-message-handler components)}}}] )
 
-(def app
-  (-> routes
+(defn app [components]
+  (-> components
+      routes
       make-handler
       json/wrap-json-response
-      (json/wrap-json-body {:keywords? true})))
+      (json/wrap-json-body {:keywords? true})
+      logger.timbre/wrap-with-logger))
 
-(defn start! [{:keys [server]}]
-  (jetty/run-jetty (reload/wrap-reload #'app) (select-keys server [:port])))
+(defn start! [{:keys [http-server kafka-producer]}]
+  (let [components {:kafka-producer (components/kafka-producer kafka-producer)}]
+    (jetty/run-jetty (app components) (select-keys http-server [:port]))))
