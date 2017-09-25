@@ -1,5 +1,5 @@
 (ns nightbus.boundaries.http.server
-  (:require [nightbus.boundaries.http.server.producer :as producer]
+  (:require [nightbus.kafka.producer :as kafka.producer]
             [nightbus.components :as components]
             [bidi.ring :refer [make-handler]]
             [ring.adapter.jetty :as jetty]
@@ -9,14 +9,11 @@
             [ring.util.response :as response]
             [taoensso.timbre :as log]))
 
-(def from-wire identity)
-
 (defn produce-message-handler
   [{:keys [kafka-producer]} request]
   (->> request
        :body
-       from-wire
-       (producer/produce! kafka-producer))
+       (kafka.producer/produce! kafka-producer))
   (response/response {:status 202 :body "Produced!"}))
 
 (defn routes [components]
@@ -32,6 +29,9 @@
       (json/wrap-json-body {:keywords? true})
       logger.timbre/wrap-with-logger))
 
-(defn start! [{:keys [http-server kafka-producer]}]
-  (let [components {:kafka-producer (components/kafka-producer kafka-producer)}]
-    (jetty/run-jetty (app components) (select-keys http-server [:port]))))
+(defn start!
+  [{http-server-config :http-server
+    kafka-producer-config :kafka-broker}]
+  (nightbus.utils/tap kafka-producer-config)
+  (let [components {:kafka-producer (components/kafka-producer kafka-producer-config)}]
+    (jetty/run-jetty (app components) (select-keys http-server-config [:port]))))

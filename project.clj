@@ -3,6 +3,7 @@
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
+  :injections [(require 'nightbus.utils)]
   :dependencies [[org.clojure/clojure "1.9.0-alpha16"]
 
                  ; MQTT

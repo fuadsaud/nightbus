@@ -3,4 +3,4 @@
             [puget.printer :as puget]))
 
 (defn tap [x]
-  (doto x #(log/debug (puget/color-text :bogus %))))
+  (doto x #(log/debug (puget/cprint-str %))))
