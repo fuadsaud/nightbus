@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+self_dir=$(dirname ${0})
+
+zk_config_file='/usr/local/etc/kafka/zookeeper.properties'
+kafka_config_file="${self_dir}/../resources/config/kafka-broker.properties"
+
+zookeeper-server-start $zk_config_file & \
+  kafka-server-start $kafka_config_file
