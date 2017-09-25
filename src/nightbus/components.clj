@@ -16,7 +16,7 @@
 
 (defn kafka-consumer [config]
   (kafka.consumer/consumer {"zookeeper.connect" (address-from-config config)
-                            "group.id" "nightbus.consumer"
+                            "group.id" (:group config)
                             "auto.offset.reset" "smallest"
                             "auto.commit.enable" "false"}))
 

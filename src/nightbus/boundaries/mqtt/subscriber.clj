@@ -7,11 +7,11 @@
 (defn- produce! [kafka-producer topic payload]
   (kafka.producer/produce! kafka-producer {:topic topic :payload payload}))
 
-(defn- catch-all-handler [{:keys [kafka-producer]} topic payload]
+(defn- catch-all-handler [{:keys [kafka-producer]} topic _ payload]
   (produce! kafka-producer topic payload))
 
 (defn- exit-handler
-  [{:keys [mqtt-broker]} _ _]
+  [{:keys [mqtt-broker]} _ _ _]
   (mh/disconnect mqtt-broker)
   (System/exit 0))
 

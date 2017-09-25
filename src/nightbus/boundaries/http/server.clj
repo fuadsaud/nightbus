@@ -32,6 +32,5 @@
 (defn start!
   [{http-server-config :http-server
     kafka-producer-config :kafka-broker}]
-  (nightbus.utils/tap kafka-producer-config)
   (let [components {:kafka-producer (components/kafka-producer kafka-producer-config)}]
     (jetty/run-jetty (app components) (select-keys http-server-config [:port]))))

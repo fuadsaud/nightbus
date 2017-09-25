@@ -1,7 +1,7 @@
 {
   "topic": "test",
   "payload": {
-    "foo": "bar",
+    "foo": "test1",
     "baz": 42
   }
 }
