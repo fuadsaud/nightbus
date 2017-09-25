@@ -1,16 +1,31 @@
 (ns nightbus.boundaries.mqtt.subscriber
   (:require [clojurewerkz.machine-head.client :as mh]
             [taoensso.timbre :as log]
-            [nightbus.utils :as utils]))
+            [nightbus.components :as components]
+            [nightbus.kafka.producer :as kafka.producer]))
 
-(defn- broker-address-from-config [config]
-  (str "tcp://" (:host config) ":" (:port config)))
+(defn- produce! [kafka-producer topic payload]
+  (kafka.producer/produce! kafka-producer {:topic topic :payload payload}))
 
-(defn start! [{:keys [mqtt-broker]}]
-  (let [broker-address (broker-address-from-config mqtt-broker)
-        conn (mh/connect broker-address)]
-    (mh/subscribe conn {"#" 0} (fn [^String topic _ ^bytes payload]
-                                 (utils/tap (String. payload "UTF-8"))))
-    (mh/subscribe conn {"$exit" 0} (fn [^String topic _ ^bytes payload]
-                                     (mh/disconnect conn)
-                                     (System/exit 0)))))
+(defn- catch-all-handler [{:keys [kafka-producer]} topic payload]
+  (produce! kafka-producer topic payload))
+
+(defn- exit-handler
+  [{:keys [mqtt-broker]} _ _]
+  (mh/disconnect mqtt-broker)
+  (System/exit 0))
+
+(def subscriptions
+  {"#"     {:qos 0 :fn catch-all-handler}
+   "$exit" {:qos 0 :fn exit-handler}})
+
+(defn- subscribe-all!
+  [{:keys [mqtt-broker] :as components} subscriptions]
+  (doseq [[topic {:keys [qos fn]}] subscriptions]
+    (mh/subscribe mqtt-broker {topic qos} (partial fn components))))
+
+(defn start! [{mqtt-broker-config :mqtt-broker
+               kafka-producer-config :kafka-broker}]
+  (let [components {:mqtt-broker (components/mqtt-broker mqtt-broker-config)
+                    :kafka-producer (components/kafka-producer kafka-producer-config)}]
+    (subscribe-all! components subscriptions)))
