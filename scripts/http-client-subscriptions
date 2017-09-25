@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+curl -XPOST localhost:8080/ops/subscriptions \
+  -H 'Content-Type: application/json' \
+  -d '{"topic": "foobar",  "url": "http://localhost:9000", "method": "PUT"}'

@@ -1,6 +1,6 @@
 (ns nightbus.boundaries.http.client.subscriptions
   (:require [nightbus.boundaries.http.client.subscriptions.store :as store]
-            [clojure.tools.logging :as log]))
+            [taoensso.timbre :as log]))
 
 (def subscriptions (atom {}))
 

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+message=$(cat $1)
+
+echo $message
+
+curl -X POST http://localhost:8081/messages \
+  -H 'Content-Type: application/json' \
+  -d "$message"

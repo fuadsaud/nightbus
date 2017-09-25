@@ -1,11 +1,19 @@
 (ns nightbus.boundaries.mqtt.publisher
   (:require [clojurewerkz.machine-head.client :as mh]
-            [clojure.tools.logging :as log]))
+            [taoensso.timbre :as log]
+            [nightbus.components :as components]
+            [nightbus.kafka.consumer :as kafka.consumer]))
 
-(defn- broker-address-from-config [config]
-  (str "tcp://" (:host config) ":" (:port config)))
+(def publish mh/publish)
 
-(defn start! [{:keys [broker]}]
-  (let [broker-address (broker-address-from-config broker)
-        conn (mh/connect broker-address)]
-    (mh/publish conn "beth" "aqui tambem é beth")))
+(defn kafka->mqtt! [mqtt-broker kafka-consumer]
+  (kafka.consumer/consume! kafka-consumer
+                           "test"
+                           kafka.consumer/kafka->mqtt
+                           #(log/debug %)))
+
+(defn start! [{mqtt-broker-config :mqtt-broker
+               kafka-consumer-config :kafka-consumer}]
+  (let [mqtt-broker (components/mqtt-broker mqtt-broker-config)
+        kafka-consumer (components/kafka-consumer kafka-consumer-config)]
+    (kafka->mqtt! mqtt-broker kafka-consumer)))
