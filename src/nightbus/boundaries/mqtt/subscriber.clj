@@ -4,10 +4,13 @@
             [nightbus.components :as components]
             [nightbus.kafka.producer :as kafka.producer]))
 
+(def ^:private format-payload (comp (partial apply str) (partial map char)))
+
 (defn- produce! [kafka-producer topic payload]
   (kafka.producer/produce! kafka-producer {:topic topic :payload payload}))
 
 (defn- catch-all-handler [{:keys [kafka-producer]} topic _ payload]
+  (nightbus.utils/tap {::handler {:topic topic :payload (format-payload payload)}})
   (produce! kafka-producer topic payload))
 
 (defn- exit-handler

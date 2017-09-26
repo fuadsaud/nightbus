@@ -7,7 +7,7 @@
 (def consumer-config {:group "mqtt-publisher"})
 
 (defn- publish! [mqtt-broker {:keys [topic value]}]
-  (nightbus.utils/tap {:publishing {:topic topic :value value}})
+  (nightbus.utils/tap {::publishing {:topic topic :value value}})
   (mh/publish mqtt-broker topic value))
 
 (defn- kafka->mqtt! [kafka-consumer mqtt-broker]
