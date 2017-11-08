@@ -5,4 +5,3 @@ message=$(cat $1)
 echo $message
 
 coap post -p "$message" coap://localhost:5683/messages
-

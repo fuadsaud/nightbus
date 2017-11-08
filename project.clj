@@ -25,6 +25,7 @@
                  ; Misc
                  [org.clojure/data.json "0.2.6"]
                  [mvxcvi/puget "1.0.1"]
+                 [commons-io/commons-io "2.5"]
 
                  [com.taoensso/timbre "4.10.0"]
                  [ring-logger-timbre "0.7.5"]]

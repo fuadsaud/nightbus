@@ -3,18 +3,19 @@
             [nightbus.components :as components]
             [bidi.ring :refer [make-handler]]
             [ring.adapter.jetty :as jetty]
-            [ring.middleware.json :as json]
-            [ring.middleware.reload :as reload]
+            [ring.middleware.params :as params]
             [ring.logger.timbre :as logger.timbre]
             [ring.util.response :as response]
-            [taoensso.timbre :as log]))
+            [ring.util.request :as request]
+            [taoensso.timbre :as log])
+  (:import (org.apache.commons.io IOUtils)))
 
 (defn produce-message-handler
   [{:keys [kafka-producer]} request]
-  (->> request
-       :body
-       (kafka.producer/produce! kafka-producer))
-  (response/response {:status 202 :body "Produced!"}))
+  (let [topic (get (:query-params request) "topic")
+        payload (-> request :body IOUtils/toByteArray)]
+    (kafka.producer/produce! kafka-producer {:topic topic :payload payload}))
+  {:status 202})
 
 (defn routes [components]
   ["/"
@@ -25,8 +26,7 @@
   (-> components
       routes
       make-handler
-      json/wrap-json-response
-      (json/wrap-json-body {:keywords? true})
+      params/wrap-params
       logger.timbre/wrap-with-logger))
 
 (defn start!

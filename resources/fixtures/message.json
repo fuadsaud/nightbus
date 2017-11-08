@@ -1,7 +1,1 @@
-{
-  "topic": "test",
-  "payload": {
-    "foo": "test1",
-    "baz": 42
-  }
-}
+{"foo":"test1","baz": 42}
