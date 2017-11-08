@@ -16,6 +16,9 @@
                  [ring/ring-json "0.4.0"]
                  [ring/ring-devel "1.6.2"]
 
+                 ; CoAP
+                 [org.eclipse.californium/californium-core "2.0.0-M5"]
+
                  ; Kafka
                  [clj-kafka "0.3.4"]
 
@@ -25,4 +28,8 @@
 
                  [com.taoensso/timbre "4.10.0"]
                  [ring-logger-timbre "0.7.5"]]
+
+  :java-source-paths ["src/main/java"]
+
+  :aot :all
   :main nightbus.core)
