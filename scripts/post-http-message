@@ -4,6 +4,7 @@ message=$(cat $1)
 
 echo $message
 
-curl -X POST http://localhost:8081/messages?topic=test \
+curl -X POST http://localhost:8080/messages?topic=test \
   -H 'Content-Type: text/plain' \
-  -d "$message"
+  -d "$message" \
+  -vvv

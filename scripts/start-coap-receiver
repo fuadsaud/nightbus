@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+rackup -p 6000 -o 127.0.0.1 receivers/coap/config.ru
