@@ -23,8 +23,7 @@
     (doseq [{:keys [url method]} subscriptions]
       (let [req-fn (get request-method-fns method)]
         (log/info (str "[HTTP CLIENT] " {::req {:method method :url url :value value}}))
-        (req-fn url {
-                     :body value
+        (req-fn url {:body value
                      :content-type "text/plain"}
                 #_(fn [response] (log/info (str "[HTTP CLIENT] " {::req-success response})))
                 #_(fn [exception] (log/info (str "[HTTP CLIENT] " {::req-failure exception}))))))))
@@ -50,7 +49,6 @@
   (-> routes
       make-handler
       (json/wrap-json-body {:keywords? true})))
-
 
 (defn start! [{zk-connect :zk-connect http-client-config :http-client}]
   (let [kafka-consumer (components/kafka-consumer (merge consumer-config zk-connect))
