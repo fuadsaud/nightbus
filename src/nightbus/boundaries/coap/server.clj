@@ -13,7 +13,7 @@
     (handlePOST [exchange]
       (let [payload (nightbus.utils/tap (.getRequestPayload exchange))
             topic (nightbus.utils/tap (.getQueryParameter exchange "topic"))]
-        (log/info (str "[COAP SERVER]" {:post-message {:topic topic}}))
+        (log/info (str "[COAP SERVER] " {:post-message {:topic topic}}))
         (kafka.producer/produce! kafka-producer {:topic topic :payload payload})
         (.respond exchange CoAP$ResponseCode/CHANGED)))))
 
