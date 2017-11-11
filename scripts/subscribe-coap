@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+coap post \
+  -p '{"topic": "test", "url": "coap://127.0.0.1:6000", "method": "POST"}' \
+  coap://localhost:5684/subscriptions
