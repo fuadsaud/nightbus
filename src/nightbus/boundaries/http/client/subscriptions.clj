@@ -9,3 +9,6 @@
     (log/info (str "[HTTP CLIENT]: "
                    {:subscribe {:topic topic :subscriber subscriber}}))
     (swap! subscriptions update topic conj subscriber)))
+
+(defn subscribers-of [topic]
+  (get @subscriptions topic))
