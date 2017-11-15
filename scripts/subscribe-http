@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-curl -XPOST localhost:8081/ops/subscriptions \
+curl -XPOST localhost:8081/subscriptions \
   -H 'Content-Type: application/json' \
   -d '{"topic": "test", "url": "http://localhost:9000", "method": "PUT"}' \
   -vvv
