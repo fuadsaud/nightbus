@@ -5,8 +5,7 @@
 
 (defn subscribe! [{:keys [topic] :as subscription}]
   (let [subscriber (select-keys subscription [:url :method])]
-    (log/info (str "[COAP SUBS]: "
-                   {:subscribe {:topic topic :subscriber subscriber}}))
+    (log/info {::subscribe {:topic topic :subscriber subscriber}})
     (swap! subscriptions update topic conj subscriber)))
 
 (defn subscribers-of [topic]

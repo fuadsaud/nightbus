@@ -3,7 +3,6 @@
             [nightbus.components :as components]
             [nightbus.kafka.consumer :as kafka.consumer]
             [bidi.ring :refer [make-handler]]
-            [ring.util.response :as response]
             [ring.middleware.json :as json]
             [ring.middleware.reload :as reload]
             [ring.adapter.jetty :as jetty]
@@ -24,25 +23,24 @@
       (let [req-fn (get request-method-fns method)]
         (log/info (str "[HTTP CLIENT] " {::req {:method method :url url :value value}}))
         (req-fn url {:body value
-                     :content-type "text/plain"}
-                #_(fn [response] (log/info (str "[HTTP CLIENT] " {::req-success response})))
-                #_(fn [exception] (log/info (str "[HTTP CLIENT] " {::req-failure exception}))))))))
+                     :content-type "text/plain"
+                     :async? true}
+                (fn [response] (log/info {::req-success response}))
+                (fn [exception] (log/info {::req-failure exception})))))))
 
 (defn- kafka->http! [kafka-consumer]
   (kafka.consumer/consume! kafka-consumer "test" identity make-requests!))
 
-(def ^:private from-wire identity)
-
 (defn- subscribe-handler
   [request]
   (-> request
-      from-wire
+      :body
       subscriptions/subscribe!)
-  (response/response "Subscribed!"))
+  {:status 201 :body "Subscribed!"})
 
 (def ^:private routes
   ["/"
-   {"ops/subscriptions"
+   {"subscriptions"
     {:post {"" subscribe-handler}}}] )
 
 (def app

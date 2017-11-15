@@ -5,16 +5,26 @@
             [bidi.ring :refer [make-handler]]
             [taoensso.timbre :as log]
             [clojure.data.json :as json])
-  (:import (org.eclipse.californium.core CoapServer CoapResource CoapClient)
+  (:import (org.eclipse.californium.core CoapServer CoapResource CoapClient CoapHandler CoapResponse)
            (org.eclipse.californium.core.coap CoAP$ResponseCode MediaTypeRegistry)
            (org.eclipse.californium.core.network CoapEndpoint)
            (java.net InetAddress InetSocketAddress)))
 
 (def ^:private consumer-config {:group "coap-client"})
 
+(def ^:private coap-response-handler
+  (proxy [CoapHandler] []
+    (onLoad [response]
+      (let [body (.getResponseText response)
+            status-code (.getCode response)]
+        (log/info {::on-load {:status status-code :body body}})))
+
+    (onError []
+      (log/info {::on-error "CoAP request failed"}))))
+
 (def ^:private request-method-fns
-  {"POST"   #(.post %1 %2 %3)
-   "PUT"    #(.put %1 %2 %3)})
+  {"POST"   #(.post %1 coap-response-handler %2 %3)
+   "PUT"    #(.put %1 coap-response-handler %2 %3)})
 
 (defn- make-requests! [{:keys [topic value]}]
   (log/debug (type value))
