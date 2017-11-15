@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+topic=${1:-'#'}
+
+mosquitto_sub -v -t "${topic}"

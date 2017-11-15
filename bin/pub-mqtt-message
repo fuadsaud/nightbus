@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+message=$(cat ${1})
+qos=${2:-1}
+topic=${3:-test}
+
+mosquitto_pub -q "${qos}" -t "${topic}" -m "${message}"
