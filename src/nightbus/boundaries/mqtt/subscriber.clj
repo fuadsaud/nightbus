@@ -2,11 +2,13 @@
   (:require [clojurewerkz.machine-head.client :as mh]
             [taoensso.timbre :as log]
             [nightbus.components :as components]
+            [nightbus.instrument :as instrument]
             [nightbus.kafka.producer :as kafka.producer]))
 
 (def ^:private format-payload (comp (partial apply str) (partial map char)))
 
 (defn- produce! [kafka-producer topic payload]
+  (instrument/log-metric! :mqtt-in-message)
   (kafka.producer/produce! kafka-producer {:topic topic :payload payload}))
 
 (defn- catch-all-handler [{:keys [kafka-producer]} topic _ payload]
