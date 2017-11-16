@@ -5,14 +5,14 @@ set -euo pipefail
 times="${1}"
 self_dir="$(dirname "$(realpath "$0")")"
 
-${self_dir}/subscribe-http
+${self_dir}/subscribe-coap
 
 for n in $(seq 1 "$times"); do
   t=`gdate +%s%3N`
 
   echo "request #${n} at ${t}"
 
-  echo "$t" >> "${self_dir}/../benchmark/mqtt-http/t0"
+  echo "$t" >> "${self_dir}/../benchmark/mqtt-coap/t0"
 
   ${self_dir}/pub-mqtt-message ${self_dir}/../resources/fixtures/message.json
 done
