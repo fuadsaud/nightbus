@@ -1,6 +1,7 @@
 (ns nightbus.boundaries.http.client
   (:require [nightbus.boundaries.http.client.subscriptions :as subscriptions]
             [nightbus.components :as components]
+            [nightbus.instrument :as instrument]
             [nightbus.kafka.consumer :as kafka.consumer]
             [bidi.ring :refer [make-handler]]
             [ring.middleware.json :as json]
@@ -17,6 +18,7 @@
    "DELETE" http/delete})
 
 (defn- make-requests! [{:keys [topic value]}]
+  (instrument/log-metric! :http-client-in-message)
   (log/info (str "[HTTP CLIENT] "{::making-requests {:topic topic :value value}}))
   (let [subscriptions (subscriptions/subscribers-of topic)]
     (doseq [{:keys [url method]} subscriptions]

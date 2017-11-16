@@ -1,6 +1,7 @@
 (ns nightbus.boundaries.http.server
   (:require [nightbus.kafka.producer :as kafka.producer]
             [nightbus.components :as components]
+            [nightbus.instrument :as instrument]
             [bidi.ring :refer [make-handler]]
             [ring.adapter.jetty :as jetty]
             [ring.middleware.params :as params]
@@ -12,6 +13,7 @@
 
 (defn produce-message-handler
   [{:keys [kafka-producer]} request]
+  (instrument/log-metric! :http-server-in-request)
   (let [topic (get (:query-params request) "topic")
         payload (-> request :body IOUtils/toByteArray)]
     (kafka.producer/produce! kafka-producer {:topic topic :payload payload}))

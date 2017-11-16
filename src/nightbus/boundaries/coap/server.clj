@@ -1,6 +1,7 @@
 (ns nightbus.boundaries.coap.server
   (:require [nightbus.kafka.producer :as kafka.producer]
             [nightbus.components :as components]
+            [nightbus.instrument :as instrument]
             [taoensso.timbre :as log])
   (:import (org.eclipse.californium.core CoapServer CoapResource)
            (org.eclipse.californium.core.coap CoAP$ResponseCode)
@@ -11,10 +12,12 @@
   [{:keys [kafka-producer]}]
   (proxy [CoapResource] ["messages"]
     (handlePOST [exchange]
+      (instrument/log-metric! :coap-server-in-request)
       (let [payload (nightbus.utils/tap (.getRequestPayload exchange))
             topic (nightbus.utils/tap (.getQueryParameter exchange "topic"))]
         (log/info (str "[COAP SERVER] " {:post-message {:topic topic}}))
         (kafka.producer/produce! kafka-producer {:topic topic :payload payload})
+        (instrument/log-metric! :coap-server-out-request)
         (.respond exchange CoAP$ResponseCode/CHANGED)))))
 
 (defn start!

@@ -1,6 +1,7 @@
 (ns nightbus.boundaries.coap.client
   (:require [nightbus.boundaries.coap.client.subscriptions :as subscriptions]
             [nightbus.components :as components]
+            [nightbus.instrument :as instrument]
             [nightbus.kafka.consumer :as kafka.consumer]
             [bidi.ring :refer [make-handler]]
             [taoensso.timbre :as log]
@@ -27,6 +28,7 @@
    "PUT"    #(.put %1 coap-response-handler %2 %3)})
 
 (defn- make-requests! [{:keys [topic value]}]
+  (instrument/log-metric! :coap-client-in-message)
   (log/debug (type value))
   (log/info (str "[COAP CLIENT] "{::making-requests {:topic topic :value value}}))
   (let [subscriptions (subscriptions/subscribers-of topic)]
@@ -44,7 +46,7 @@
   (proxy [CoapResource] ["subscriptions"]
     (handlePOST [exchange]
       (let [subscription (-> exchange .getRequestPayload slurp nightbus.utils/tap (json/read-str :key-fn keyword))]
-        (log/info {:post-message {:subscription subscription}})
+        (log/info {:post-subscription {:subscription subscription}})
         (subscriptions/subscribe! subscription)
         (.respond exchange CoAP$ResponseCode/CREATED)))))
 
