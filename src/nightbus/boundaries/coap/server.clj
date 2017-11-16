@@ -17,7 +17,6 @@
             topic (nightbus.utils/tap (.getQueryParameter exchange "topic"))]
         (log/info (str "[COAP SERVER] " {:post-message {:topic topic}}))
         (kafka.producer/produce! kafka-producer {:topic topic :payload payload})
-        (instrument/log-metric! :coap-server-out-request)
         (.respond exchange CoAP$ResponseCode/CHANGED)))))
 
 (defn start!
