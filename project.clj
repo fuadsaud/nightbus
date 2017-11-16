@@ -25,6 +25,7 @@
 
                  ; Misc
                  [org.clojure/data.json "0.2.6"]
+                 [org.clojure/algo.generic "0.1.2"]
                  [mvxcvi/puget "1.0.1"]
                  [commons-io/commons-io "2.5"]
 
