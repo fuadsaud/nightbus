@@ -2,8 +2,6 @@
 
 message=$(cat $1)
 
-echo $message
-
 curl -X POST http://localhost:8080/messages?topic=test \
   -H 'Content-Type: text/plain' \
   -d "$message" \
