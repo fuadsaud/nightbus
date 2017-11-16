@@ -12,7 +12,7 @@ for n in $(seq 1 "$times"); do
 
   echo "request #${n} at ${t}"
 
-  echo "$t" >> "${self_dir}/../benchmark/coap-http/t0"
+  echo "$t" >> "${self_dir}/../benchmark/mqtt-http/t0"
 
-  ${self_dir}/post-coap-message ${self_dir}/../resources/fixtures/message.json
+  ${self_dir}/pub-mqtt-message ${self_dir}/../resources/fixtures/message.json
 done

@@ -2,5 +2,5 @@
 
 curl -XPOST localhost:8081/subscriptions \
   -H 'Content-Type: application/json' \
-  -d '{"topic": "test", "url": "http://localhost:9000", "method": "PUT"}' \
+  -d '{"topic": "test", "url": "http://localhost:9000", "method": "POST"}' \
   -vvv
