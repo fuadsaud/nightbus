@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+
+require 'csv'
+require 'awesome_print'
+require 'pry'
+
+INTERVALS = -> (reqs) {
+  reqs.map { |req|
+    req
+      .each_cons(2)
+      .map { |timestamp_pair| timestamp_pair.last - timestamp_pair.first }
+  }
+}
+
+REQS = CSV.read(ARGV.first).map { |l| l.map(&:to_i) }
+
+Pry::ColorPrinter.pp(INTERVALS.(REQS))
