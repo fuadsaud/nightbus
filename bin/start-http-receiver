@@ -1,3 +1,7 @@
 #!/usr/bin/env bash
 
-rackup -p 9000 -o 127.0.0.1 receivers/http/config.ru
+set -euo pipefail
+
+port=${1:-9000}
+
+rackup -p ${port} -o 127.0.0.1 receivers/http/config.ru

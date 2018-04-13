@@ -1,0 +1,17 @@
+#!/usr/bin/env zsh
+
+set -euo pipefail
+
+self_dir="$(dirname "$(realpath "$0")")"
+# tz=`gdate +%s%3N`
+
+while :
+do
+  # t=`gdate +%s%3N`
+
+  # if ((($t - $tz) > 65000)); then
+  #   break
+  # fi
+
+  ${self_dir}/pub-mqtt-message ${self_dir}/../resources/fixtures/message.json
+done

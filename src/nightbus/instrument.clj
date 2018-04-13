@@ -4,8 +4,11 @@
             [clojure.java.io :as io]))
 
 (def metric->filename
-  {:http-server-in-request  (io/file "/Users/fuad/Code/fuadsaud/nightbus/benchmark/http-coap/t1")
-   :coap-client-in-message  (io/file "/Users/fuad/Code/fuadsaud/nightbus/benchmark/http-coap/t2")})
+  {:http-server-in-request (io/file "/Users/fuad/Code/fuadsaud/nightbus/benchmark/http-coap/t1")
+   :coap-client-in-message (io/file "/Users/fuad/Code/fuadsaud/nightbus/benchmark/http-coap/t2")
+   :coap-server-in-request (io/file "/Users/fuad/Code/fuadsaud/nightbus/benchmark/coap-http/t1")
+   :http-client-in-message (io/file "/Users/fuad/Code/fuadsaud/nightbus/benchmark/coap-http/t2")
+   :mqtt-in-message        (io/file "/Users/fuad/Code/fuadsaud/nightbus/benchmark/mqtt-coap/t1")})
 
 (def metric->file (fmap io/file metric->filename))
 

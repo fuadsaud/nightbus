@@ -35,4 +35,4 @@
   [{http-server-config :http-server
     kafka-producer-config :kafka-broker}]
   (let [components {:kafka-producer (components/kafka-producer kafka-producer-config)}]
-    (jetty/run-jetty (app components) (select-keys http-server-config [:port]))))
+    (jetty/run-jetty (app components) (select-keys http-server-config [:host :port]))))

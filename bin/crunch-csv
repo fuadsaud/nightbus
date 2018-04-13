@@ -4,7 +4,7 @@ require 'csv'
 require 'awesome_print'
 require 'pry'
 
-INTERVALS = -> (reqs) {
+REDUCE_INTERVALS = -> (reqs) {
   reqs.map { |req|
     req
       .each_cons(2)
@@ -12,6 +12,34 @@ INTERVALS = -> (reqs) {
   }
 }
 
+PERCENTILE = -> (k, series) {
+  series.sort.reverse.drop((series.count * (1 - k / 100.0)).to_i).first
+}
+
+MEAN = -> (series) {
+  series.reduce(&:+) / series.size.to_f
+}
+
 REQS = CSV.read(ARGV.first).map { |l| l.map(&:to_i) }
 
-Pry::ColorPrinter.pp(INTERVALS.(REQS))
+INTERVALS = REDUCE_INTERVALS.(REQS)
+
+IS = Array.new(3) { |i| { "i#{i}".to_sym => INTERVALS.map { |is| is[i] } } }
+          .reduce(&:merge)
+
+
+
+stats = IS.map { |k, v|
+  [
+    k,
+    {
+      p99: PERCENTILE.(99, v),
+      p95: PERCENTILE.(95, v),
+      mean: MEAN.(v),
+      max: v.max
+    }
+  ]
+}.to_h.merge(worse_10: INTERVALS.map { |req| req.reduce(&:+) }.sort.reverse.take(10))
+
+Pry::ColorPrinter.pp(stats)
+# p Array.new(INTERVALS[0].size) { |i| [INTERVALS[0], INTERVALS[1], INTERVALS[2]] }

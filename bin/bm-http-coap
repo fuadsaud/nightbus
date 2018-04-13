@@ -5,7 +5,9 @@ set -euo pipefail
 times="${1}"
 self_dir="$(dirname "$(realpath "$0")")"
 
-${self_dir}/subscribe-coap
+${self_dir}/subscribe-coap 6000
+${self_dir}/subscribe-coap 6001
+${self_dir}/subscribe-coap 6002
 
 for n in $(seq 1 "$times"); do
   t=`gdate +%s%3N`

@@ -1,3 +1,7 @@
 #!/usr/bin/env bash
 
-BUNDLE_GEMFILE=receivers/coap/Gemfile rackup -p 6000 -o 127.0.0.1 receivers/coap/config.ru
+set -euo pipefail
+
+port=${1:-6000}
+
+BUNDLE_GEMFILE=receivers/coap/Gemfile rackup -p ${port} -o 127.0.0.1 receivers/coap/config.ru

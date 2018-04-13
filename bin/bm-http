@@ -1,0 +1,10 @@
+#!/usr/bin/env zsh
+
+set -euo pipefail
+
+self_dir="$(dirname "$(realpath "$0")")"
+
+while :
+do
+  ${self_dir}/post-http-message ${self_dir}/../resources/fixtures/message.json
+done

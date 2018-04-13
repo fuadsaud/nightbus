@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+port=${1:-6000}
+
 /usr/local/bin/coap post \
-  -p '{"topic": "test", "url": "coap://127.0.0.1:6000", "method": "POST"}' \
+  -p "{\"topic\": \"test\", \"url\": \"coap://127.0.0.1:${port}\", \"method\": \"POST\"}" \
   coap://localhost:5684/subscriptions
